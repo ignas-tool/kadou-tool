@@ -2,171 +2,201 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="稼動ツール">
+<meta name="theme-color" content="#f5f4f0">
 <title>稼動詳細テキスト生成ツール</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh;padding:2rem 1rem}
-  .container{max-width:720px;margin:0 auto}
-  h1{font-size:20px;font-weight:600;margin-bottom:4px;color:#1a1a1a}
-  .subtitle{font-size:13px;color:#888;margin-bottom:1.5rem}
-  .input-row{display:flex;gap:8px;align-items:center;margin-bottom:0.75rem}
-  .input-row input{flex:1;height:40px;padding:0 12px;font-size:14px;border:1px solid #d0cfc8;border-radius:8px;background:#fff;color:#1a1a1a;outline:none}
-  .input-row input:focus{border-color:#888}
-  .btn{height:40px;padding:0 16px;font-size:13px;border:1px solid #d0cfc8;border-radius:8px;background:#fff;color:#1a1a1a;cursor:pointer;white-space:nowrap;transition:background 0.15s}
-  .btn:hover{background:#f0efe8}
-  .btn.primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-  .btn.primary:hover{background:#333}
-  .msg{font-size:13px;min-height:18px;margin-bottom:1rem}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{background:#f5f4f0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:#f5f4f0;color:#1a1a1a;min-height:100vh;
+    padding:16px;
+    padding-top:max(env(safe-area-inset-top),20px);
+    padding-bottom:max(env(safe-area-inset-bottom),40px);
+    padding-left:max(env(safe-area-inset-left),16px);
+    padding-right:max(env(safe-area-inset-right),16px);
+  }
+  /* ダークモード強制無効 */
+  @media (prefers-color-scheme: dark) {
+    html, body { background:#f5f4f0 !important; color:#1a1a1a !important; }
+    .container * { color-scheme: light; }
+  }
+  .container{max-width:640px;margin:0 auto}
+  .header{margin-bottom:20px}
+  h1{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:4px}
+  .subtitle{font-size:12px;color:#888;line-height:1.6}
+
+  .input-block{background:#fff;border:1px solid #e0dfd8;border-radius:14px;padding:14px;margin-bottom:12px}
+  .input-label{font-size:11px;font-weight:600;color:#888;letter-spacing:0.05em;margin-bottom:6px}
+  .url-input{
+    width:100%;height:44px;padding:0 12px;font-size:15px;
+    border:1px solid #d0cfd8;border-radius:10px;
+    background:#fafaf7;color:#1a1a1a;outline:none;
+    -webkit-appearance:none;appearance:none;
+    color-scheme:light;
+  }
+  .url-input:focus{border-color:#555;background:#fff}
+  .btn-row{display:flex;gap:8px;margin-top:10px}
+  .btn{
+    flex:1;height:48px;font-size:15px;font-weight:600;
+    border-radius:10px;border:none;cursor:pointer;
+    -webkit-appearance:none;color-scheme:light;
+  }
+  .btn.primary{background:#1a1a1a;color:#fff}
+  .btn.secondary{background:#ebe9e3;color:#444;flex:0 0 80px}
+
+  .msg{font-size:13px;min-height:16px;margin-bottom:10px;padding:0 2px}
   .msg.err{color:#c0392b}
-  .msg.ok{color:#1a7a4a}
-  .all-copy-row{display:flex;justify-content:flex-end;margin-bottom:10px}
+  .msg.ok{color:#1a7a4a;font-weight:500}
+
+  .all-copy-row{margin-bottom:10px}
+  .btn-all{
+    width:100%;height:48px;font-size:14px;font-weight:600;
+    background:#fff;color:#1a1a1a;
+    border:1px solid #d0cfd8;border-radius:10px;
+    cursor:pointer;-webkit-appearance:none;color-scheme:light;
+  }
+  .btn-all.copied{color:#1a7a4a;border-color:#1a7a4a;background:#f0faf5}
+
   .results{display:flex;flex-direction:column;gap:10px}
-  .card{background:#fff;border:1px solid #e0dfd8;border-radius:12px;overflow:hidden}
-  .card-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #e0dfd8;background:#fafaf7}
-  .card-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
-  .area-badge{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500}
-  .copy-btn{height:28px;padding:0 12px;font-size:12px;border:1px solid #d0cfc8;border-radius:6px;background:#fff;color:#1a1a1a;cursor:pointer;transition:all 0.15s}
-  .copy-btn:hover{background:#f0efe8}
-  .copy-btn.copied{color:#1a7a4a;border-color:#1a7a4a}
-  .text-out{padding:14px;font-size:13px;line-height:2;color:#1a1a1a;font-family:"Courier New","Osaka-Mono",monospace;white-space:pre-wrap;word-break:break-all;background:#fefefe;cursor:text;user-select:all}
-  .hint-box{text-align:center;padding:2.5rem 1rem;color:#aaa;font-size:13px;line-height:2;background:#fff;border:1px dashed #d0cfc8;border-radius:12px}
-  .hint-box strong{display:block;font-size:15px;color:#888;margin-bottom:6px}
+  .card{background:#fff;border:1px solid #e0dfd8;border-radius:14px;overflow:hidden;color-scheme:light}
+  .card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 14px;border-bottom:1px solid #ebe9e3;background:#fafaf7;gap:8px;
+  }
+  .card-title{font-size:14px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+  .card-title span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a}
+  .area-badge{font-size:10px;padding:3px 8px;border-radius:999px;font-weight:600;flex-shrink:0;white-space:nowrap}
+  .copy-btn{
+    height:34px;padding:0 14px;font-size:13px;font-weight:600;
+    border:1px solid #d0cfd8;border-radius:8px;
+    background:#fff;color:#1a1a1a;cursor:pointer;
+    flex-shrink:0;white-space:nowrap;-webkit-appearance:none;color-scheme:light;
+  }
+  .copy-btn.copied{color:#1a7a4a;border-color:#1a7a4a;background:#f0faf5}
+
+  .text-out{
+    padding:14px;font-size:13px;line-height:2;
+    color:#1a1a1a;background:#fefefe;
+    font-family:"Courier New","Osaka-Mono",monospace;
+    white-space:pre-wrap;word-break:break-all;
+    -webkit-user-select:all;user-select:all;
+    color-scheme:light;
+  }
+
+  .hint-box{
+    text-align:center;padding:2.5rem 1rem;
+    color:#bbb;font-size:13px;line-height:1.9;
+    background:#fff;border:1px dashed #d0cfd8;border-radius:14px;
+    color-scheme:light;
+  }
+  .hint-box strong{display:block;font-size:15px;color:#999;margin-bottom:8px;font-weight:700}
+  .hint-box code{font-size:11px;background:#f5f4f0;padding:4px 7px;border-radius:6px;word-break:break-all;color:#888;display:inline-block;margin-top:6px;line-height:1.6}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>稼動詳細テキスト生成ツール</h1>
-  <p class="subtitle">SlackのメッセージリンクURLを貼り付けると、コピペ用の稼動詳細テキストが表示されます</p>
-
-  <div class="input-row">
-    <input id="urlInput" type="text" placeholder="SlackリンクのURLを貼り付けてください…" onkeydown="if(event.key==='Enter')lookup()">
-    <button class="btn primary" onclick="lookup()">読み込む</button>
-    <button class="btn" onclick="clearAll()">クリア</button>
+  <div class="header">
+    <h1>稼動詳細テキスト生成ツール</h1>
+    <p class="subtitle">SlackのメッセージリンクURLを貼り付けると、コピペ用の稼動詳細が表示されます</p>
+  </div>
+  <div class="input-block">
+    <div class="input-label">SLACK メッセージURL</div>
+    <input id="urlInput" class="url-input" type="text" inputmode="url"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      placeholder="https://xxx.slack.com/archives/.../p..."
+      onkeydown="if(event.key==='Enter'){this.blur();lookup()}">
+    <div class="btn-row">
+      <button class="btn primary" onclick="lookup()">読み込む</button>
+      <button class="btn secondary" onclick="clearAll()">クリア</button>
+    </div>
   </div>
   <div class="msg" id="msg"></div>
-
   <div id="allCopyRow" class="all-copy-row" style="display:none">
-    <button class="btn" onclick="copyAll()">全会場をまとめてコピー</button>
+    <button class="btn-all" id="btnAll" onclick="copyAll()">全会場をまとめてコピー</button>
   </div>
-
   <div id="results" class="results"></div>
-
   <div id="hintBox" class="hint-box">
     <strong>使い方</strong>
-    SlackのメッセージリンクをコピーしてURLに貼り付け、<br>
-    「読み込む」を押すとその投稿内の稼動詳細が一覧表示されます。<br><br>
-    例：<code>https://pr-nle9231.slack.com/archives/C09JMDSK807/p1773531000648549</code>
+    Slackのメッセージリンクを上のURLフォームに貼り付け、<br>「読み込む」を押してください。<br>
+    <code>https://pr-nle9231.slack.com/archives/C09JMDSK807/p1773531000648549</code>
   </div>
 </div>
-
 <script>
-const DB = {
-  "p1773531000648549": [
-    {area:"東京", store:"オーケー西新井店", address:"東京都足立区西新井１丁目３９−８", dates:"3月17日（火）〜19日（木）3日間開催", space:"２階カート置き場近くのスペース", move:"8時45分から搬入", director:"倉片", tel:"090-6188-2895"},
-    {area:"埼玉", store:"コーナン川口前川店", address:"埼玉県川口市南前川１丁目１６−７", dates:"3月17日（火）〜19日（木）3日間開催", space:"1階階段踊り場", move:"8時45分から搬入", director:"新谷", tel:"090-3436-7862"},
-    {area:"千葉", store:"MEGAドン・キホーテ 柏店", address:"千葉県柏市富里３丁目３−２", dates:"3月17日（火）〜19日（木）3日間開催", space:"出入り口横", move:"8時45分から搬入", director:"澤井", tel:"080-9863-7235"},
-    {area:"神奈川", store:"マックスバリュ平塚四之宮店", address:"神奈川県平塚市四之宮２丁目１８−２６", dates:"3月17日(火)〜19日(木) 3日間開催\n3月24日(火)〜26日(木) 3日間開催", space:"1階出入口中央エスカレーター横", move:"8時45分から搬入", director:"山村", tel:"090-6318-9413"},
-    {area:"東京", store:"西友清瀬店", address:"東京都清瀬市元町１丁目４−５", dates:"3月17日（火）〜19日（木）3日間開催", space:"3Fレジ横ギフト売場", move:"8時45分から搬入", director:"八坂", tel:"070-9164-5766"},
+const DB={
+  "p1773531000648549":[
+    {area:"東京",store:"オーケー西新井店",address:"東京都足立区西新井１丁目３９−８",dates:"3月17日（火）〜19日（木）3日間開催",space:"２階カート置き場近くのスペース",move:"8時45分から搬入",director:"倉片",tel:"090-6188-2895"},
+    {area:"埼玉",store:"コーナン川口前川店",address:"埼玉県川口市南前川１丁目１６−７",dates:"3月17日（火）〜19日（木）3日間開催",space:"1階階段踊り場",move:"8時45分から搬入",director:"新谷",tel:"090-3436-7862"},
+    {area:"千葉",store:"MEGAドン・キホーテ 柏店",address:"千葉県柏市富里３丁目３−２",dates:"3月17日（火）〜19日（木）3日間開催",space:"出入り口横",move:"8時45分から搬入",director:"澤井",tel:"080-9863-7235"},
+    {area:"神奈川",store:"マックスバリュ平塚四之宮店",address:"神奈川県平塚市四之宮２丁目１８−２６",dates:"3月17日(火)〜19日(木) 3日間開催\n3月24日(火)〜26日(木) 3日間開催",space:"1階出入口中央エスカレーター横",move:"8時45分から搬入",director:"山村",tel:"090-6318-9413"},
+    {area:"東京",store:"西友清瀬店",address:"東京都清瀬市元町１丁目４−５",dates:"3月17日（火）〜19日（木）3日間開催",space:"3Fレジ横ギフト売場",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
   ],
-  "p1773531000648548": [
-    {area:"東京", store:"島忠ホームズ葛西店", address:"東京都江戸川区東葛西９丁目３", dates:"3月10日（火）〜12日（木）3日間開催", space:"２階ニトリ前", move:"9時45分から搬入", director:"倉片", tel:"090-6188-2895"},
-    {area:"埼玉", store:"島忠ホームズ春日部本店", address:"埼玉県春日部市西八木崎２丁目８−１", dates:"3月10日（火）〜12日（木）3日間開催", space:"1階階段踊り場", move:"9時45分から搬入", director:"山村", tel:"090-6318-9413"},
-    {area:"千葉", store:"マルエツ馬込沢店", address:"千葉県鎌ケ谷市東道野辺７丁目１９−１６", dates:"3月10日（火）〜12日（木）3日間開催", space:"店内スペース", move:"8時45分から搬入", director:"八坂", tel:"070-9164-5766"},
+  "p1772707552273909":[
+    {area:"東京",store:"島忠ホームズ葛西店",address:"東京都江戸川区東葛西９丁目３",dates:"3月10日（火）〜12日（木）3日間開催",space:"２階ニトリ前",move:"9時45分から搬入",director:"倉片",tel:"090-6188-2895"},
+    {area:"埼玉",store:"島忠ホームズ春日部本店",address:"埼玉県春日部市西八木崎２丁目８−１",dates:"3月10日（火）〜12日（木）3日間開催",space:"1階階段踊り場",move:"9時45分から搬入",director:"山村",tel:"090-6318-9413"},
+    {area:"千葉",store:"マルエツ馬込沢店",address:"千葉県鎌ケ谷市東道野辺７丁目１９−１６",dates:"3月10日（火）〜12日（木）3日間開催",space:"店内スペース",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
+  ],
+  "p1773531000648548":[
+    {area:"東京",store:"島忠ホームズ葛西店",address:"東京都江戸川区東葛西９丁目３",dates:"3月10日（火）〜12日（木）3日間開催",space:"２階ニトリ前",move:"9時45分から搬入",director:"倉片",tel:"090-6188-2895"},
+    {area:"埼玉",store:"島忠ホームズ春日部本店",address:"埼玉県春日部市西八木崎２丁目８−１",dates:"3月10日（火）〜12日（木）3日間開催",space:"1階階段踊り場",move:"9時45分から搬入",director:"山村",tel:"090-6318-9413"},
+    {area:"千葉",store:"マルエツ馬込沢店",address:"千葉県鎌ケ谷市東道野辺７丁目１９−１６",dates:"3月10日（火）〜12日（木）3日間開催",space:"店内スペース",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
   ]
 };
-
-const areaColor = {
-  "東京":   {bg:"#dbeafe", text:"#1e40af"},
-  "埼玉":   {bg:"#dcfce7", text:"#166534"},
-  "千葉":   {bg:"#fef3c7", text:"#92400e"},
-  "神奈川": {bg:"#ede9fe", text:"#5b21b6"}
-};
-
-const FORMS = `▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfIUrdBHjkGLtTB5Hd-gsMCuMIWMI5_HjxPzbK8opfbDl9D2w/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform`;
-
-function makeText(d) {
-  return `【${d.area}エリア・${d.store}】\n●住所：${d.address}\n●日程：${d.dates}\n●イベントスペース：${d.space}\n搬入から設営：${d.move}となります。\nディレクター：${d.director}（${d.tel}）\n\n${FORMS}`;
+const areaColor={"東京":{bg:"#dbeafe",text:"#1e40af"},"埼玉":{bg:"#dcfce7",text:"#166534"},"千葉":{bg:"#fef3c7",text:"#92400e"},"神奈川":{bg:"#ede9fe",text:"#5b21b6"}};
+const FORMS="▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfIUrdBHjkGLtTB5Hd-gsMCuMIWMI5_HjxPzbK8opfbDl9D2w/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform";
+function makeText(d){return"【"+d.area+"エリア・"+d.store+"】\n●住所："+d.address+"\n●日程："+d.dates+"\n●イベントスペース："+d.space+"\n搬入から設営："+d.move+"となります。\nディレクター："+d.director+"（"+d.tel+"）\n\n"+FORMS}
+function extractKey(url){
+  url=url.trim().replace(/[\u3000\s]/g,"");
+  var m=url.match(/p([0-9]{10,})/);
+  if(m)return"p"+m[1];
+  m=url.match(/\/([0-9]{10,})/);
+  if(m)return"p"+m[1];
+  return null;
 }
-
-function extractKey(url) {
-  const m = url.match(/\/(p[0-9]+)/);
-  return m ? m[1] : null;
+function setMsg(txt,type){var el=document.getElementById("msg");el.textContent=txt;el.className="msg"+(type?" "+type:"")}
+var currentData=[];
+function lookup(){
+  var url=document.getElementById("urlInput").value.trim();
+  if(!url){setMsg("URLを入力してください","err");return}
+  var key=extractKey(url);
+  if(!key){setMsg("SlackのメッセージURLを貼り付けてください","err");return}
+  var entries=DB[key];
+  if(!entries){setMsg("このリンクのデータはまだ登録されていません。","err");clearResults();return}
+  currentData=entries;render(entries);
+  setMsg(entries.length+"件の稼動が見つかりました","ok");
+  document.getElementById("hintBox").style.display="none";
+  document.getElementById("allCopyRow").style.display="block";
 }
-
-function setMsg(txt, type) {
-  const el = document.getElementById("msg");
-  el.textContent = txt;
-  el.className = "msg" + (type ? " " + type : "");
-}
-
-let currentData = [];
-
-function lookup() {
-  const url = document.getElementById("urlInput").value.trim();
-  if (!url) { setMsg("URLを入力してください", "err"); return; }
-  const key = extractKey(url);
-  if (!key) { setMsg("SlackのメッセージURLを貼り付けてください（例：.../p1773531000648549）", "err"); return; }
-  const entries = DB[key];
-  if (!entries) { setMsg("このリンクのデータはまだ登録されていません。", "err"); clearResults(); return; }
-  currentData = entries;
-  render(entries);
-  setMsg(entries.length + "件の稼動が見つかりました", "ok");
-  document.getElementById("hintBox").style.display = "none";
-  document.getElementById("allCopyRow").style.display = "flex";
-}
-
-function render(entries) {
-  const container = document.getElementById("results");
-  container.innerHTML = "";
-  entries.forEach((d, i) => {
-    const txt = makeText(d);
-    const ac = areaColor[d.area] || {bg:"#f3f4f6", text:"#374151"};
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `<div class="card-head">
-      <div class="card-title">
-        <span class="area-badge" style="background:${ac.bg};color:${ac.text}">${d.area}</span>
-        ${d.store}
-      </div>
-      <button class="copy-btn" id="btn${i}" onclick="copyOne(${i})">コピー</button>
-    </div>
-    <div class="text-out" id="txt${i}">${txt}</div>`;
+function render(entries){
+  var container=document.getElementById("results");container.innerHTML="";
+  entries.forEach(function(d,i){
+    var ac=areaColor[d.area]||{bg:"#f3f4f6",text:"#374151"};
+    var card=document.createElement("div");card.className="card";
+    var txt=makeText(d).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    card.innerHTML='<div class="card-head"><div class="card-title"><span class="area-badge" style="background:'+ac.bg+';color:'+ac.text+'">'+d.area+'</span><span>'+d.store+'</span></div><button class="copy-btn" id="btn'+i+'" onclick="copyOne('+i+')">コピー</button></div><div class="text-out">'+txt+"</div>";
     container.appendChild(card);
   });
 }
-
-function copyOne(i) {
-  navigator.clipboard.writeText(makeText(currentData[i])).then(() => {
-    const btn = document.getElementById("btn" + i);
-    btn.textContent = "コピー完了！";
-    btn.classList.add("copied");
-    setTimeout(() => { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
+function copyOne(i){
+  navigator.clipboard.writeText(makeText(currentData[i])).then(function(){
+    var btn=document.getElementById("btn"+i);
+    btn.textContent="コピー完了！";btn.classList.add("copied");
+    setTimeout(function(){btn.textContent="コピー";btn.classList.remove("copied")},2000);
   });
 }
-
-function copyAll() {
-  const all = currentData.map(makeText).join("\n\n");
-  navigator.clipboard.writeText(all).then(() => {
-    const btn = event.target;
-    const orig = btn.textContent;
-    btn.textContent = "コピー完了！";
-    setTimeout(() => { btn.textContent = orig; }, 2000);
+function copyAll(){
+  var btn=document.getElementById("btnAll");
+  navigator.clipboard.writeText(currentData.map(makeText).join("\n\n")).then(function(){
+    btn.textContent="コピー完了！";btn.classList.add("copied");
+    setTimeout(function(){btn.textContent="全会場をまとめてコピー";btn.classList.remove("copied")},2000);
   });
 }
-
-function clearResults() {
-  currentData = [];
-  document.getElementById("results").innerHTML = "";
-  document.getElementById("allCopyRow").style.display = "none";
-  document.getElementById("hintBox").style.display = "block";
-}
-
-function clearAll() {
-  document.getElementById("urlInput").value = "";
-  clearResults();
-  setMsg("", "");
-}
+function clearResults(){currentData=[];document.getElementById("results").innerHTML="";document.getElementById("allCopyRow").style.display="none";document.getElementById("hintBox").style.display="block"}
+function clearAll(){document.getElementById("urlInput").value="";clearResults();setMsg("","")}
 </script>
 </body>
 </html>
