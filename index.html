@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="稼動ツール">
-<meta name="theme-color" content="#f5f4f0">
+<meta name="theme-color" content="##f5f4f0">
 <title>稼動詳細テキスト生成ツール</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -16,29 +16,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku
 .container{max-width:640px;margin:0 auto}
 h1{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:4px}
 .subtitle{font-size:12px;color:#888;line-height:1.6;margin-bottom:20px}
-.tabs{display:flex;gap:0;margin-bottom:16px;border:1px solid #d0cfd8;border-radius:10px;overflow:hidden}
-.tab{flex:1;height:40px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:#fff;color:#888;-webkit-appearance:none;color-scheme:light}
-.tab.active{background:#1a1a1a;color:#fff}
-.panel{display:none}
-.panel.active{display:block}
-
-/* URLパネル */
 .input-block{background:#fff;border:1px solid #e0dfd8;border-radius:14px;padding:14px;margin-bottom:12px;color-scheme:light}
 .input-label{font-size:11px;font-weight:600;color:#888;letter-spacing:.05em;margin-bottom:6px}
-.url-input,.paste-area{width:100%;padding:10px 12px;font-size:14px;border:1px solid #d0cfd8;border-radius:10px;background:#fafaf7;color:#1a1a1a;outline:none;-webkit-appearance:none;color-scheme:light}
-.url-input{height:44px}
-.paste-area{height:160px;resize:none;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif}
-.url-input:focus,.paste-area:focus{border-color:#555;background:#fff}
+.paste-area{width:100%;height:180px;padding:10px 12px;font-size:14px;border:1px solid #d0cfd8;border-radius:10px;background:#fafaf7;color:#1a1a1a;outline:none;-webkit-appearance:none;color-scheme:light;resize:none;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif}
+.paste-area:focus{border-color:#555;background:#fff}
 .btn-row{display:flex;gap:8px;margin-top:10px}
 .btn{flex:1;height:48px;font-size:15px;font-weight:600;border-radius:10px;border:none;cursor:pointer;-webkit-appearance:none;color-scheme:light}
-.btn:active{opacity:.8}
+.btn:active{opacity:.75;transform:scale(.97)}
 .btn.primary{background:#1a1a1a;color:#fff}
 .btn.secondary{background:#ebe9e3;color:#444;flex:0 0 80px}
 .msg{font-size:13px;min-height:16px;margin-bottom:10px;padding:0 2px}
 .msg.err{color:#c0392b}
 .msg.ok{color:#1a7a4a;font-weight:500}
-.msg.loading{color:#888}
-.btn-all{width:100%;height:48px;font-size:14px;font-weight:600;background:#fff;color:#1a1a1a;border:1px solid #d0cfd8;border-radius:10px;cursor:pointer;-webkit-appearance:none;margin-bottom:10px}
+.btn-all{width:100%;height:48px;font-size:14px;font-weight:600;background:#fff;color:#1a1a1a;border:1px solid #d0cfd8;border-radius:10px;cursor:pointer;-webkit-appearance:none;margin-bottom:10px;color-scheme:light}
 .btn-all.copied{color:#1a7a4a;border-color:#1a7a4a;background:#f0faf5}
 .results{display:flex;flex-direction:column;gap:10px}
 .card{background:#fff;border:1px solid #e0dfd8;border-radius:14px;overflow:hidden;color-scheme:light}
@@ -46,232 +36,218 @@ h1{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:4p
 .card-title{font-size:14px;font-weight:700;color:#1a1a1a;display:flex;align-items:center;gap:7px;flex:1;min-width:0}
 .card-title span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .area-badge{font-size:10px;padding:3px 8px;border-radius:999px;font-weight:600;flex-shrink:0;white-space:nowrap}
-.copy-btn{height:34px;padding:0 14px;font-size:13px;font-weight:600;border:1px solid #d0cfd8;border-radius:8px;background:#fff;color:#1a1a1a;cursor:pointer;flex-shrink:0;-webkit-appearance:none}
+.copy-btn{height:34px;padding:0 14px;font-size:13px;font-weight:600;border:1px solid #d0cfd8;border-radius:8px;background:#fff;color:#1a1a1a;cursor:pointer;flex-shrink:0;-webkit-appearance:none;white-space:nowrap}
+.copy-btn:active{opacity:.65}
 .copy-btn.copied{color:#1a7a4a;border-color:#1a7a4a;background:#f0faf5}
 .text-out{padding:14px;font-size:13px;line-height:2;color:#1a1a1a;background:#fefefe;font-family:"Courier New",monospace;white-space:pre-wrap;word-break:break-all;-webkit-user-select:all;user-select:all}
-.hint-box{text-align:center;padding:2rem 1rem;color:#bbb;font-size:13px;line-height:1.9;background:#fff;border:1px dashed #d0cfd8;border-radius:14px}
-.hint-box strong{display:block;font-size:14px;color:#999;margin-bottom:6px;font-weight:700}
-.hint-box code{font-size:11px;background:#f5f4f0;padding:3px 6px;border-radius:5px;color:#888;display:inline-block;margin-top:4px;line-height:1.6;word-break:break-all}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#888;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
+.hint-box{text-align:center;padding:2rem 1rem;color:#bbb;font-size:13px;line-height:2;background:#fff;border:1px dashed #d0cfd8;border-radius:14px}
+.hint-box strong{display:block;font-size:15px;color:#999;margin-bottom:6px;font-weight:700}
+.hint-box .step{background:#f5f4f0;border-radius:10px;padding:10px 14px;text-align:left;margin-top:10px;font-size:13px;color:#888;line-height:2}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>稼動詳細テキスト生成ツール</h1>
-  <p class="subtitle">SlackメッセージのテキストをAIで自動解析してコピペ用テキストを生成します</p>
+  <p class="subtitle">Slackのメッセージテキストを貼り付けるだけで自動解析します</p>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('paste')">テキスト貼り付け</button>
-    <button class="tab" onclick="switchTab('url')">URL入力（旧方式）</button>
-  </div>
-
-  <!-- テキスト貼り付けパネル -->
-  <div class="panel active" id="panel-paste">
-    <div class="input-block">
-      <div class="input-label">SLACK メッセージのテキストをここに貼り付け</div>
-      <textarea id="pasteArea" class="paste-area"
-        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-        placeholder="Slackのメッセージを長押しして「テキストをコピー」→ここに貼り付け"></textarea>
-      <div class="btn-row">
-        <button class="btn primary" onclick="analyzeText()">解析してテキスト生成</button>
-        <button class="btn secondary" onclick="clearPaste()">クリア</button>
-      </div>
-    </div>
-    <div class="msg" id="msg-paste"></div>
-    <div id="allCopyRow-paste" style="display:none">
-      <button class="btn-all" id="btnAll-paste" onclick="copyAll('paste')">全会場をまとめてコピー</button>
-    </div>
-    <div id="results-paste" class="results"></div>
-    <div id="hintBox-paste" class="hint-box">
-      <strong>使い方</strong>
-      Slackでメッセージを<strong style="color:#555">長押し→「テキストをコピー」</strong><br>
-      上のエリアに貼り付けて「解析」を押すだけ。<br>
-      どの週のメッセージでも自動で読み取ります。
+  <div class="input-block">
+    <div class="input-label">SLACK メッセージのテキストをここに貼り付け</div>
+    <textarea id="pasteArea" class="paste-area"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      placeholder="Slackのメッセージを長押し→「テキストをコピー」してここに貼り付け"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="analyze()">解析してテキスト生成</button>
+      <button class="btn secondary" onclick="clearAll()">クリア</button>
     </div>
   </div>
 
-  <!-- URL入力パネル（旧方式） -->
-  <div class="panel" id="panel-url">
-    <div class="input-block">
-      <div class="input-label">SLACK メッセージURL</div>
-      <input id="urlInput" class="url-input" type="text" inputmode="url"
-        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-        placeholder="https://xxx.slack.com/archives/.../p..."
-        onkeydown="if(event.key==='Enter'){this.blur();lookupUrl()}">
-      <div class="btn-row">
-        <button class="btn primary" onclick="lookupUrl()">読み込む</button>
-        <button class="btn secondary" onclick="clearUrl()">クリア</button>
-      </div>
-    </div>
-    <div class="msg" id="msg-url"></div>
-    <div id="allCopyRow-url" style="display:none">
-      <button class="btn-all" id="btnAll-url" onclick="copyAll('url')">全会場をまとめてコピー</button>
-    </div>
-    <div id="results-url" class="results"></div>
-    <div id="hintBox-url" class="hint-box">
-      <strong>対応済みリンク</strong>
-      <code>p1773531000648549</code><code>p1772707552273909</code>
-      <code>p1773531000648548</code><code>p1772362800996879</code>
+  <div class="msg" id="msg"></div>
+  <div id="allCopyRow" style="display:none">
+    <button class="btn-all" id="btnAll" onclick="copyAll()">全会場をまとめてコピー</button>
+  </div>
+  <div id="results" class="results"></div>
+
+  <div id="hintBox" class="hint-box">
+    <strong>使い方</strong>
+    <div class="step">
+      ① Slackでメッセージを<strong style="color:#555">長押し</strong><br>
+      ②「テキストをコピー」をタップ<br>
+      ③ 上のエリアに<strong style="color:#555">貼り付け</strong><br>
+      ④「解析してテキスト生成」をタップ
     </div>
   </div>
 </div>
 
 <script>
-// ===== フォームリンク =====
-const FORMS="▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfIUrdBHjkGLtTB5Hd-gsMCuMIWMI5_HjxPzbK8opfbDl9D2w/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform";
+var FORMS = "▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfIUrdBHjkGLtTB5Hd-gsMCuMIWMI5_HjxPzbK8opfbDl9D2w/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform";
 
-// ===== 旧DB（URL方式用） =====
-const DB={
-  "p1773531000648549":[
-    {area:"東京",store:"オーケー西新井店",address:"東京都足立区西新井１丁目３９−８",dates:"3月17日（火）〜19日（木）3日間開催",space:"２階カート置き場近くのスペース",move:"8時45分から搬入",director:"倉片",tel:"090-6188-2895"},
-    {area:"埼玉",store:"コーナン川口前川店",address:"埼玉県川口市南前川１丁目１６−７",dates:"3月17日（火）〜19日（木）3日間開催",space:"1階階段踊り場",move:"8時45分から搬入",director:"新谷",tel:"090-3436-7862"},
-    {area:"千葉",store:"MEGAドン・キホーテ 柏店",address:"千葉県柏市富里３丁目３−２",dates:"3月17日（火）〜19日（木）3日間開催",space:"出入り口横",move:"8時45分から搬入",director:"澤井",tel:"080-9863-7235"},
-    {area:"神奈川",store:"マックスバリュ平塚四之宮店",address:"神奈川県平塚市四之宮２丁目１８−２６",dates:"3月17日(火)〜19日(木) 3日間開催\n3月24日(火)〜26日(木) 3日間開催",space:"1階出入口中央エスカレーター横",move:"8時45分から搬入",director:"山村",tel:"090-6318-9413"},
-    {area:"東京",store:"西友清瀬店",address:"東京都清瀬市元町１丁目４−５",dates:"3月17日（火）〜19日（木）3日間開催",space:"3Fレジ横ギフト売場",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
-  ],
-  "p1772362800996879":[
-    {area:"東京",store:"ピーコック目白店",address:"東京都新宿区下落合３丁目１４−２１",dates:"2月24日（火）〜26日（木）3日間開催",space:"コピー機横",move:"9時45分から搬入",director:"八坂",tel:"070-9164-5766"},
-    {area:"埼玉",store:"MEGAドン・キホーテ 浦和原山店",address:"埼玉県さいたま市緑区原山４丁目３−３",dates:"2月24日（火）〜26日（木）3日間開催",space:"B1Fフードコート",move:"8時45分から搬入",director:"山村",tel:"090-6318-9413"},
-    {area:"千葉",store:"MEGAドン・キホーテ 船橋習志野店",address:"千葉県船橋市習志野４丁目５−５",dates:"2月24日（火）〜26日（木）3日間開催",space:"入り口横スペース",move:"8時45分から搬入",director:"澤井",tel:"080-9863-7235"},
-    {area:"東京",store:"マルエツ清瀬中里店",address:"東京都清瀬市中里５丁目２１−１",dates:"2月24日（火）〜26日（木）3日間開催",space:"店内入口付近",move:"9時45分から搬入",director:"倉片",tel:"090-6188-2895"}
-  ],
-  "p1772707552273909":[
-    {area:"東京",store:"島忠ホームズ葛西店",address:"東京都江戸川区東葛西９丁目３",dates:"3月10日（火）〜12日（木）3日間開催",space:"２階ニトリ前",move:"9時45分から搬入",director:"倉片",tel:"090-6188-2895"},
-    {area:"埼玉",store:"島忠ホームズ春日部本店",address:"埼玉県春日部市西八木崎２丁目８−１",dates:"3月10日（火）〜12日（木）3日間開催",space:"1階階段踊り場",move:"9時45分から搬入",director:"山村",tel:"090-6318-9413"},
-    {area:"千葉",store:"マルエツ馬込沢店",address:"千葉県鎌ケ谷市東道野辺７丁目１９−１６",dates:"3月10日（火）〜12日（木）3日間開催",space:"店内スペース",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
-  ],
-  "p1773531000648548":[
-    {area:"東京",store:"島忠ホームズ葛西店",address:"東京都江戸川区東葛西９丁目３",dates:"3月10日（火）〜12日（木）3日間開催",space:"２階ニトリ前",move:"9時45分から搬入",director:"倉片",tel:"090-6188-2895"},
-    {area:"埼玉",store:"島忠ホームズ春日部本店",address:"埼玉県春日部市西八木崎２丁目８−１",dates:"3月10日（火）〜12日（木）3日間開催",space:"1階階段踊り場",move:"9時45分から搬入",director:"山村",tel:"090-6318-9413"},
-    {area:"千葉",store:"マルエツ馬込沢店",address:"千葉県鎌ケ谷市東道野辺７丁目１９−１６",dates:"3月10日（火）〜12日（木）3日間開催",space:"店内スペース",move:"8時45分から搬入",director:"八坂",tel:"070-9164-5766"}
-  ]
+var areaColor = {
+  "東京":{bg:"#dbeafe",text:"#1e40af"},
+  "埼玉":{bg:"#dcfce7",text:"#166534"},
+  "千葉":{bg:"#fef3c7",text:"#92400e"},
+  "神奈川":{bg:"#ede9fe",text:"#5b21b6"},
+  "清瀬":{bg:"#fce7f3",text:"#9d174d"},
+  "横浜":{bg:"#ede9fe",text:"#5b21b6"},
+  "群馬":{bg:"#ecfdf5",text:"#065f46"},
+  "栃木":{bg:"#fff7ed",text:"#9a3412"},
+  "茨城":{bg:"#f0fdf4",text:"#166534"}
 };
 
-// ===== エリア色 =====
-const areaColor={"東京":{bg:"#dbeafe",text:"#1e40af"},"埼玉":{bg:"#dcfce7",text:"#166534"},"千葉":{bg:"#fef3c7",text:"#92400e"},"神奈川":{bg:"#ede9fe",text:"#5b21b6"},"清瀬":{bg:"#fce7f3",text:"#9d174d"}};
-
-function makeText(d){
-  return"【"+d.area+"エリア・"+d.store+"】\n●住所："+d.address+"\n●日程："+d.dates+"\n●イベントスペース："+d.space+"\n搬入から設営："+d.move+"となります。\nディレクター："+d.director+"（"+d.tel+"）\n\n"+FORMS;
+function makeText(d) {
+  return "【" + d.area + "エリア・" + d.store + "】\n●住所：" + d.address +
+    "\n●日程：" + d.dates + "\n●イベントスペース：" + d.space +
+    "\n搬入から設営：" + d.move + "となります。\nディレクター：" + d.director +
+    "（" + d.tel + "）\n\n" + FORMS;
 }
 
-// ===== タブ切替 =====
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['paste','url'][i]===name));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-}
+function parseVenues(text) {
+  var venues = [];
+  var lines = text.split(/\n/);
+  var currentArea = "";
 
-// ===== AI解析（テキスト貼り付け） =====
-var currentData={paste:[],url:[]};
+  // まず行ごとにエリア+店舗のペアを探す
+  // 「○○エリア【店舗名】」または「○○エリア」→次行「【店舗名】」のパターン
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i].trim();
 
-async function analyzeText(){
-  var text=document.getElementById('pasteArea').value.trim();
-  if(!text){setMsg('paste','テキストを貼り付けてください','err');return;}
-  setMsg('paste','<span class="spinner"></span>AIで解析中...','loading',true);
+    // エリア名を更新（「〇〇エリア」を含む行）
+    var areaInLine = line.match(/([\u4e00-\u9fa5]{2,4})エリア/);
+    if (areaInLine) {
+      currentArea = areaInLine[1];
+    }
 
-  try{
-    var prompt=`以下はSlackに投稿された稼動詳細のメッセージです。
-各会場の情報を抽出してJSONの配列で返してください。
-フィールド: area(エリア名、例:東京/埼玉/千葉/神奈川), store(店舗名), address(住所), dates(日程), space(イベントスペース), move(搬入設営時刻、例:8時45分から搬入), director(ディレクター名), tel(電話番号)
-・必ずJSONのみ返してください。説明文・マークダウン記号は不要です。
-・「搬入から設営：9時45分から搬入となります。」の場合、moveは「9時45分から搬入」
-・複数の日程がある場合はdatesに改行で繋げてください。
+    // 【店舗名】が含まれる行 → ここからブロック開始
+    var storeM = line.match(/【([^】]+)】/);
+    if (storeM) {
+      var store = storeM[1].trim();
+      // このブロック（次の【】まで）を集める
+      var blockLines = [line];
+      var j = i + 1;
+      while (j < lines.length && !lines[j].match(/【[^】]+】/) && !lines[j].match(/[\u4e00-\u9fa5]{2,4}エリア【/)) {
+        // 次のエリア行（【なし）が来たら終了
+        if (lines[j].match(/^[\u4e00-\u9fa5]{2,4}エリア$/) || lines[j].match(/^[\u4e00-\u9fa5]{2,4}エリア【/)) break;
+        blockLines.push(lines[j]);
+        j++;
+      }
+      var block = blockLines.join("\n");
 
-メッセージ:
-${text}`;
+      // 住所
+      var addrM = block.match(/●?\s*住所[：:]\s*(.+)/);
+      var address = addrM ? addrM[1].trim() : "";
 
-    var res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:1000,
-        messages:[{role:"user",content:prompt}]
-      })
-    });
-    var data=await res.json();
-    var raw=data.content.map(c=>c.text||"").join("");
-    raw=raw.replace(/```json|```/g,"").trim();
-    var venues=JSON.parse(raw);
-    if(!Array.isArray(venues)||venues.length===0){setMsg('paste','会場情報が見つかりませんでした','err');return;}
-    currentData.paste=venues;
-    render('paste',venues);
-    setMsg('paste',venues.length+'件の稼動を取得しました','ok');
-    document.getElementById('hintBox-paste').style.display='none';
-    document.getElementById('allCopyRow-paste').style.display='block';
-  }catch(e){
-    setMsg('paste','解析に失敗しました: '+e.message,'err');
+      // 日程
+      var dateLines = [];
+      var allDateM = block.match(/●?\s*日程[：:]\s*(.+)/g);
+      if (allDateM) allDateM.forEach(function(l) {
+        var v = l.replace(/●?\s*日程[：:]\s*/, "").trim();
+        if (v) dateLines.push(v);
+      });
+      var dates = dateLines.join("\n");
+
+      // イベントスペース
+      var spaceM = block.match(/●?\s*イベントスペース[：:]\s*(.+)/);
+      var space = spaceM ? spaceM[1].trim() : "";
+
+      // 搬入
+      var moveM = block.match(/搬入から設営[：:]\s*(.+?)(?:となります|。|$)/m);
+      var move = moveM ? moveM[1].trim() : "";
+
+      // ディレクター（「ディレクター：」が重複しているケースも対応）
+      var dirM = block.match(/ディレクター[：:]\s*(?:ディレクター[：:]\s*)?([^\s（(【\d\n]+?)\s*[（(]([0-9\-]+)[）)]/);
+      var director = "", tel = "";
+      if (dirM) {
+        director = dirM[1].trim();
+        tel = dirM[2].trim();
+      }
+
+      if (store && (address || dates)) {
+        venues.push({
+          area: currentArea || "不明",
+          store: store,
+          address: address,
+          dates: dates,
+          space: space,
+          move: move,
+          director: director,
+          tel: tel
+        });
+      }
+      i = j;
+      continue;
+    }
+    i++;
   }
+  return venues;
 }
 
-// ===== URL方式（旧） =====
-function lookupUrl(){
-  var url=document.getElementById('urlInput').value.trim();
-  if(!url){setMsg('url','URLを入力してください','err');return;}
-  var m=url.replace(/[\u3000\s]/g,"").match(/p([0-9]{10,})/);
-  if(!m){m=url.replace(/[\u3000\s]/g,"").match(/\/([0-9]{10,})/);}
-  var key=m?"p"+m[1]:null;
-  if(!key){setMsg('url','SlackのメッセージURLを貼り付けてください','err');return;}
-  var entries=DB[key];
-  if(!entries){setMsg('url','このリンクは未登録です。「テキスト貼り付け」タブをお使いください','err');return;}
-  currentData.url=entries;
-  render('url',entries);
-  setMsg('url',entries.length+'件の稼動が見つかりました','ok');
-  document.getElementById('hintBox-url').style.display='none';
-  document.getElementById('allCopyRow-url').style.display='block';
+var currentData = [];
+
+function analyze() {
+  var text = document.getElementById("pasteArea").value.trim();
+  if (!text) { setMsg("テキストを貼り付けてください", "err"); return; }
+  var venues = parseVenues(text);
+  if (!venues.length) {
+    setMsg("会場情報を読み取れませんでした。【店舗名】の形式が含まれているか確認してください", "err");
+    return;
+  }
+  currentData = venues;
+  render(venues);
+  setMsg(venues.length + "件の稼動を取得しました", "ok");
+  document.getElementById("hintBox").style.display = "none";
+  document.getElementById("allCopyRow").style.display = "block";
 }
 
-// ===== レンダリング =====
-function render(mode,entries){
-  var container=document.getElementById('results-'+mode);
-  container.innerHTML='';
-  entries.forEach(function(d,i){
-    var ac=areaColor[d.area]||{bg:"#f3f4f6",text:"#374151"};
-    var card=document.createElement('div');card.className='card';
-    var txt=makeText(d).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-    card.innerHTML='<div class="card-head"><div class="card-title"><span class="area-badge" style="background:'+ac.bg+';color:'+ac.text+'">'+d.area+'</span><span>'+d.store+'</span></div><button class="copy-btn" id="btn-'+mode+'-'+i+'" onclick="copyOne(\''+mode+'\','+i+')">コピー</button></div><div class="text-out">'+txt+'</div>';
+function render(venues) {
+  var container = document.getElementById("results");
+  container.innerHTML = "";
+  venues.forEach(function(d, i) {
+    var ac = areaColor[d.area] || { bg: "#f3f4f6", text: "#374151" };
+    var card = document.createElement("div");
+    card.className = "card";
+    var txt = makeText(d).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<div class="card-title">' +
+          '<span class="area-badge" style="background:' + ac.bg + ';color:' + ac.text + '">' + d.area + '</span>' +
+          '<span>' + d.store + '</span>' +
+        '</div>' +
+        '<button class="copy-btn" id="cbtn' + i + '" onclick="copyOne(' + i + ')">コピー</button>' +
+      '</div>' +
+      '<div class="text-out">' + txt + '</div>';
     container.appendChild(card);
   });
 }
 
-// ===== コピー =====
-function copyOne(mode,i){
-  navigator.clipboard.writeText(makeText(currentData[mode][i])).then(function(){
-    var btn=document.getElementById('btn-'+mode+'-'+i);
-    btn.textContent='コピー完了！';btn.classList.add('copied');
-    setTimeout(function(){btn.textContent='コピー';btn.classList.remove('copied');},2000);
-  });
-}
-function copyAll(mode){
-  var btn=document.getElementById('btnAll-'+mode);
-  navigator.clipboard.writeText(currentData[mode].map(makeText).join('\n\n')).then(function(){
-    btn.textContent='コピー完了！';btn.classList.add('copied');
-    setTimeout(function(){btn.textContent='全会場をまとめてコピー';btn.classList.remove('copied');},2000);
+function copyOne(i) {
+  navigator.clipboard.writeText(makeText(currentData[i])).then(function() {
+    var btn = document.getElementById("cbtn" + i);
+    btn.textContent = "コピー完了！"; btn.classList.add("copied");
+    setTimeout(function() { btn.textContent = "コピー"; btn.classList.remove("copied"); }, 2000);
   });
 }
 
-// ===== クリア =====
-function clearPaste(){
-  document.getElementById('pasteArea').value='';
-  currentData.paste=[];
-  document.getElementById('results-paste').innerHTML='';
-  document.getElementById('allCopyRow-paste').style.display='none';
-  document.getElementById('hintBox-paste').style.display='block';
-  setMsg('paste','','');
+function copyAll() {
+  var btn = document.getElementById("btnAll");
+  navigator.clipboard.writeText(currentData.map(makeText).join("\n\n")).then(function() {
+    btn.textContent = "コピー完了！"; btn.classList.add("copied");
+    setTimeout(function() { btn.textContent = "全会場をまとめてコピー"; btn.classList.remove("copied"); }, 2000);
+  });
 }
-function clearUrl(){
-  document.getElementById('urlInput').value='';
-  currentData.url=[];
-  document.getElementById('results-url').innerHTML='';
-  document.getElementById('allCopyRow-url').style.display='none';
-  document.getElementById('hintBox-url').style.display='block';
-  setMsg('url','','');
+
+function clearAll() {
+  document.getElementById("pasteArea").value = "";
+  currentData = [];
+  document.getElementById("results").innerHTML = "";
+  document.getElementById("allCopyRow").style.display = "none";
+  document.getElementById("hintBox").style.display = "block";
+  setMsg("", "");
 }
-function setMsg(mode,txt,type,html){
-  var el=document.getElementById('msg-'+mode);
-  if(html)el.innerHTML=txt;else el.textContent=txt;
-  el.className='msg'+(type?' '+type:'');
+
+function setMsg(txt, type) {
+  var el = document.getElementById("msg");
+  el.textContent = txt;
+  el.className = "msg" + (type ? " " + type : "");
 }
 </script>
 </body>
