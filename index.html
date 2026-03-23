@@ -73,7 +73,7 @@ h1{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.3;margin-bottom:4p
   </div>
 </div>
 <script>
-var FORMS="▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfIUrdBHjkGLtTB5Hd-gsMCuMIWMI5_HjxPzbK8opfbDl9D2w/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform";
+var FORMS="▼前日夜フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSfRljdGfrFoDGX7IdRU1oivpaCt6DEOGrafU9PLuQZb1BMvSQ/viewform\n\n▼当日朝フォーム\nhttps://docs.google.com/forms/d/e/1FAIpQLSekGwsk8KsT18tqLF3AJ_dKHYI4Wx55w0jsTlFAl5wQ-2fzlg/viewform";
 var areaColor={"東京":{bg:"#dbeafe",text:"#1e40af"},"埼玉":{bg:"#dcfce7",text:"#166534"},"千葉":{bg:"#fef3c7",text:"#92400e"},"神奈川":{bg:"#ede9fe",text:"#5b21b6"},"清瀬":{bg:"#fce7f3",text:"#9d174d"},"横浜":{bg:"#ede9fe",text:"#5b21b6"},"群馬":{bg:"#ecfdf5",text:"#065f46"},"栃木":{bg:"#fff7ed",text:"#9a3412"},"茨城":{bg:"#f0fdf4",text:"#166534"}};
 function makeText(d){return"【"+d.area+"エリア・"+d.store+"】\n●住所："+d.address+"\n●日程："+d.dates+"\n●イベントスペース："+d.space+"\n搬入から設営："+d.move+"となります。\nディレクター："+d.director+"（"+d.tel+"）\n\n"+FORMS;}
 function parseVenues(text){
@@ -97,9 +97,13 @@ function parseVenues(text){
       var space=spaceM?spaceM[1].trim():"";
       var moveM=block.match(/搬入から設営[：:]\s*(.+?)(?:となります|。|$)/m);
       var move=moveM?moveM[1].trim():"";
-      var dirM=block.match(/ディレクター[：:]\s*(?:ディレクター[：:]\s*)?([^\s（([\u4e00-\u9fa5\d\n]+?)\s*[（(]([0-9\-]+)[）)]/);
+      var dirM=block.match(/ディレクター[：:●\s]*(?:ディレクター[：:])?\s*(?:[0-9]+[日,、\s]*)*([^\d（([\u4e00-\u9fa5\n,、日]+?)\s*[（(]([0-9\-]+)[）)]/);
       var director="",tel="";
-      if(dirM){director=dirM[1].trim();tel=dirM[2].trim();}
+      if(dirM){
+        director=dirM[1].trim();
+        tel=dirM[2].trim();
+        if(director.length>=4){var half=director.slice(0,director.length/2);if(director===half+half)director=half;}
+      }
       if(store&&(address||dates))venues.push({area:currentArea||"不明",store:store,address:address,dates:dates,space:space,move:move,director:director,tel:tel});
       i=j;continue;
     }
