@@ -97,7 +97,7 @@ function parseVenues(text){
       var space=spaceM?spaceM[1].trim():"";
       var moveM=block.match(/搬入から設営[：:]\s*(.+?)(?:となります|。|$)/m);
       var move=moveM?moveM[1].trim():"";
-      var dirM=block.match(/ディレクター[：:●\s]*(?:ディレクター[：:])?\s*(?:[0-9]+[日,、\s]*)*([^\d（([\u4e00-\u9fa5\n,、日]+?)\s*[（(]([0-9\-]+)[）)]/);
+      var dirM=block.match(/ディレクター[：:●\s]*(?:ディレクター[：:])?\s*[0-9,、〜～\-日\s]*([^\d（(,、〜～\-日\n●：:]+?)\s*[（(]([0-9\-]+)[）)]/);
       var director="",tel="";
       if(dirM){
         director=dirM[1].trim();
